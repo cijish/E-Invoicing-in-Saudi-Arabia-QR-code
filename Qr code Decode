@@ -1,0 +1,32 @@
+base64_message = "AQxCb2JzIFJlY29yZHMCDzMxMDEyMjM5MzUwMDAwMwMUMjAyMi0wNC0yNVQxNTozMDowMFoEBzEwMDAuMDAFBjE1MC4wMA=="
+
+# Decode the Base64 string
+tlv_bytes = base64.b64decode(base64_message)
+
+# Function to parse TLV bytes
+def parse_tlv(tlv_bytes):
+    i = 0
+    fields = []
+    while i < len(tlv_bytes):
+        tag = tlv_bytes[i]
+        length = tlv_bytes[i+1]
+        value = tlv_bytes[i+2:i+2+length]
+        try:
+
+            fields.append((tag, value.decode('utf-8')))
+            #fields.append((tag, value.decode()))
+
+        except:
+             print ("tag Error", tag,'\n',value ,'\n')
+             fields.append((tag, value))
+        i += 2 + length
+    return fields
+
+# Parse the TLV-encoded bytes
+fields = parse_tlv(tlv_bytes)
+
+# Display the parsed fields
+for tag, value in fields:
+    print(f"Tag: {tag}, Value: {value} \n")
+
+qrcode.make(base64_message.replace("\n" ,''))
